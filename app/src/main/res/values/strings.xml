@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">committee</string>
+    <string name="home_title">My Committees</string>
+    <string name="image">committe image</string>
+</resources>
