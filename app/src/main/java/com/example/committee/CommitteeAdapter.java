@@ -34,7 +34,7 @@ public class CommitteeAdapter extends RecyclerView.Adapter<CommitteeViewHolder> 
     public void onBindViewHolder(@NonNull CommitteeViewHolder holder, int position) {
         Committee committee = committeeList.get(position);
         holder.title.setText(committee.getName());
-        holder.numberOfMembers.setText(Integer.toString(committee.getNumberOfMembers()));
+        holder.numberOfMembers.setText(committee.getNumberOfMembers());
         holder.imageView.setImageResource(R.drawable.a);
 
         holder.card.setOnClickListener(new View.OnClickListener() {

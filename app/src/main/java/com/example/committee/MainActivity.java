@@ -2,7 +2,7 @@ package com.example.committee;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,12 +12,18 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements CommitteeSelectListener{
 
     RecyclerView recyclerView;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    static String TAG = "aunu";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,18 +31,7 @@ public class MainActivity extends AppCompatActivity implements CommitteeSelectLi
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        List<Committee> committeeList = new ArrayList<Committee>();
-
-        committeeList.add(new Committee("Name of Comm",10));
-        committeeList.add(new Committee("Name of Comm2",20));
-        committeeList.add(new Committee("Name of Comm",25));
-
-
-        recyclerView = findViewById(R.id.recycler_view);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new CommitteeAdapter(getApplicationContext(),committeeList, this));
-
+        getCommitteeData();
 
 
 
@@ -47,12 +42,36 @@ public class MainActivity extends AppCompatActivity implements CommitteeSelectLi
         });
     }
 
+    private void getCommitteeData() {
+        List<Committee> committeeList = new ArrayList<>();
+        db.collection("committees")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Committee committee = new Committee(Objects.requireNonNull(document.get("name")).toString(), Objects.requireNonNull(document.get("numberOfMembers")).toString());
+                            committeeList.add(committee);
+                        }
+                        populateRecyclerView(committeeList);
+                    } else {
+                        Log.w(TAG, "Error getting documents.", task.getException());
+                    }
+                });
+    }
+
+    private void populateRecyclerView(List<Committee> committeeList) {
+        recyclerView = findViewById(R.id.recycler_view);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new CommitteeAdapter(getApplicationContext(),committeeList, this));
+
+    }
+
     @Override
     public void onItemClicked(Committee committee) {
         Intent intent = new Intent(MainActivity.this,MembersActivity.class);
         intent.putExtra("name",committee.getName());
-        intent.putExtra("members",Integer.toString(committee.getNumberOfMembers()));
+        intent.putExtra("members",committee.getNumberOfMembers());
         MainActivity.this.startActivity(intent);
-        Toast.makeText(this, committee.getName(), Toast.LENGTH_LONG).show();
     }
 }
