@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">committee</string>
     <string name="home_title">My Committees</string>
-    <string name="image">committe image</string>
+    <string name="image">committee image</string>
+    <string name="paid">Paid ?</string>
+    <string name="past_payments">Past Payments</string>
+    <string name="remove">Remove from committee</string>
 </resources>

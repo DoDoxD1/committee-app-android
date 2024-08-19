@@ -13,10 +13,12 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberViewHolder> {
 
     Context context;
     List<MemberModel> memberList;
+    MemberSelectedListener listener;
 
-    public MemberAdapter(Context context, List<MemberModel> memberList) {
+    public MemberAdapter(Context context, List<MemberModel> memberList, MemberSelectedListener listener) {
         this.context = context;
         this.memberList = memberList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -31,6 +33,8 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberViewHolder> {
         holder.title.setText(member.getName());
         holder.isPaidTextView.setText(member.getPaid()?"Paid":"Not Paid");
         holder.imageView.setImageResource(R.drawable.a);
+
+        holder.card.setOnClickListener(view -> listener.onItemClicked(member));
     }
 
     @Override

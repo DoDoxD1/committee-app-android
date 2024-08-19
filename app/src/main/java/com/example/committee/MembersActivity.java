@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MembersActivity extends AppCompatActivity {
+public class MembersActivity extends AppCompatActivity implements MemberSelectedListener{
 
     TextView nameTextView, membersTextView;
     ProgressBar progressBar;
@@ -74,6 +74,7 @@ public class MembersActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             MemberModel member = new MemberModel(Objects.requireNonNull(document.get("name")).toString(), (Boolean) Objects.requireNonNull(document.get("isPaid")));
+                            member.setId(document.getId());
                             membersList.add(member);
                         }
                         populateRecyclerView(membersList);
@@ -87,7 +88,16 @@ public class MembersActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.GONE);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new MemberAdapter(getApplicationContext(),membersList));
+        recyclerView.setAdapter(new MemberAdapter(getApplicationContext(),membersList,this));
 
+    }
+
+    @Override
+    public void onItemClicked(MemberModel member) {
+        Intent intent = new Intent(MembersActivity.this, MemberDetailsActivity.class);
+        intent.putExtra("name", member.getName());
+        intent.putExtra("id", member.getId());
+        intent.putExtra("isPaid", member.getPaid());
+        MembersActivity.this.startActivity(intent);
     }
 }

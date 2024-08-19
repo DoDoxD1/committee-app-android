@@ -36,7 +36,7 @@ public class CommitteeAdapter extends RecyclerView.Adapter<CommitteeViewHolder> 
         holder.numberOfMembers.setText(committee.getNumberOfMembers());
         holder.imageView.setImageResource(R.drawable.a);
 
-        holder.card.setOnClickListener(view -> listener.onItemClicked(committeeList.get(position)));
+        holder.card.setOnClickListener(view -> listener.onItemClicked(committee));
     }
 
     @Override
