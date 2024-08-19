@@ -3,6 +3,9 @@ package com.example.committee;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,9 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements CommitteeSelectListener{
+public class MainActivity extends AppCompatActivity implements CommitteeSelectListener {
 
     RecyclerView recyclerView;
+    ProgressBar progressBar;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     static String TAG = "aunu";
 
@@ -31,8 +35,9 @@ public class MainActivity extends AppCompatActivity implements CommitteeSelectLi
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+        recyclerView = findViewById(R.id.recycler_view);
+        progressBar = findViewById(R.id.progress_circular);
         getCommitteeData();
-
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -43,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements CommitteeSelectLi
     }
 
     private void getCommitteeData() {
+        progressBar.setVisibility(View.VISIBLE);
         List<Committee> committeeList = new ArrayList<>();
         db.collection("committees")
                 .get()
@@ -50,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements CommitteeSelectLi
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Committee committee = new Committee(Objects.requireNonNull(document.get("name")).toString(), Objects.requireNonNull(document.get("numberOfMembers")).toString());
+                            committee.setId(document.getId());
                             committeeList.add(committee);
                         }
                         populateRecyclerView(committeeList);
@@ -60,18 +67,19 @@ public class MainActivity extends AppCompatActivity implements CommitteeSelectLi
     }
 
     private void populateRecyclerView(List<Committee> committeeList) {
-        recyclerView = findViewById(R.id.recycler_view);
 
+        progressBar.setVisibility(View.GONE);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new CommitteeAdapter(getApplicationContext(),committeeList, this));
+        recyclerView.setAdapter(new CommitteeAdapter(getApplicationContext(), committeeList, this));
 
     }
 
     @Override
     public void onItemClicked(Committee committee) {
-        Intent intent = new Intent(MainActivity.this,MembersActivity.class);
-        intent.putExtra("name",committee.getName());
-        intent.putExtra("members",committee.getNumberOfMembers());
+        Intent intent = new Intent(MainActivity.this, MembersActivity.class);
+        intent.putExtra("name", committee.getName());
+        intent.putExtra("id", committee.getId());
+        intent.putExtra("members", committee.getNumberOfMembers());
         MainActivity.this.startActivity(intent);
     }
 }

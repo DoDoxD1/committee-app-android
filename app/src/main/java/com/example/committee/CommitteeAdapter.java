@@ -3,7 +3,6 @@ package com.example.committee;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -37,12 +36,7 @@ public class CommitteeAdapter extends RecyclerView.Adapter<CommitteeViewHolder> 
         holder.numberOfMembers.setText(committee.getNumberOfMembers());
         holder.imageView.setImageResource(R.drawable.a);
 
-        holder.card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.onItemClicked(committeeList.get(position));
-            }
-        });
+        holder.card.setOnClickListener(view -> listener.onItemClicked(committeeList.get(position)));
     }
 
     @Override

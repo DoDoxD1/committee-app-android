@@ -21,7 +21,4 @@ public class MemberModel {
         return isPaid;
     }
 
-    public void setPaid(Boolean paid) {
-        isPaid = paid;
-    }
 }

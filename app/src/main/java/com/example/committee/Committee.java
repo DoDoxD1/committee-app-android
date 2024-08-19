@@ -1,12 +1,9 @@
 package com.example.committee;
 
 public class Committee {
+    String id;
     String name;
     String numberOfMembers;
-
-    public Committee(String name) {
-        this.name = name;
-    }
 
     public Committee(String name, String numberOfMembers) {
         this.name = name;
@@ -25,7 +22,11 @@ public class Committee {
         return numberOfMembers;
     }
 
-    public void setNumberOfMembers(String numberOfMembers) {
-        this.numberOfMembers = numberOfMembers;
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

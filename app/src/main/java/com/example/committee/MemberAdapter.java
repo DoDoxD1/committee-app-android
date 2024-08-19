@@ -13,7 +13,6 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberViewHolder> {
 
     Context context;
     List<MemberModel> memberList;
-    CommitteeSelectListener listener;
 
     public MemberAdapter(Context context, List<MemberModel> memberList) {
         this.context = context;
